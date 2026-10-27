@@ -1,0 +1,20 @@
+# Local run of every service with production-like hardening: `make up`, then `make down`.
+# Settings come from your shell or a `.env` file (see .env.example); defaults below.
+name: ai-virtual-staging-aws-eks
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  tmpfs: [/tmp]
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *hardening
+    build:
+      context: ./services/api
+      args: { APP_VERSION: local }
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports: ["127.0.0.1:8000:8000"]

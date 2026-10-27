@@ -1,0 +1,116 @@
+CodeWithMuh Learning License, version 1.0
+
+Copyright (c) 2026 Muhammad Rashid (CodeWithMuh). All rights reserved, except
+for the permissions granted below.
+
+Project: Heya (部屋), part 1 of "AI on EKS"
+Source:  https://github.com/codewithmuh/ai-virtual-staging-aws-eks
+
+
+ABOUT THE AUTHOR
+
+Muhammad Rashid, known online as CodeWithMuh, is a Senior Platform Engineer
+(Backend, DevOps & AWS Infrastructure, LLM Systems) based in Lahore, Pakistan.
+Muhammad Rashid builds and runs production systems on AWS and teaches cloud and
+AI engineering on YouTube and at codewithmuh.com.
+
+Contact for questions, permissions and commercial licenses:
+
+  Email:    contact@codewithmuh.com
+  Website:  https://codewithmuh.com
+  GitHub:   https://github.com/codewithmuh
+  LinkedIn: https://www.linkedin.com/in/muhammad-rashid-daha/
+  YouTube:  https://youtube.com/@codewithmuh
+
+
+1. PURPOSE
+
+This project is published so that people can learn from it. You may use it for
+learning only. Any commercial use is prohibited unless the author has given you
+written permission.
+
+"The Software" means everything in this repository: source code, configuration,
+infrastructure code, documentation, diagrams and other content, and any part or
+modified version of them.
+
+2. WHAT YOU MAY DO
+
+Free of charge, and only for learning, you may:
+
+  a. read, download, clone and fork the Software;
+  b. build, run, deploy and modify the Software on your own computers and cloud
+     accounts to learn how it works;
+  c. use the Software to teach at a school, college or university, or in free
+     workshops and study groups;
+  d. show your own copy or modified version in your personal portfolio or CV,
+     as long as you say clearly that it is based on this project; and
+  e. share a modified version publicly for others to learn from, under this
+     same license, with this file and the notice in section 4 kept.
+
+3. WHAT YOU MAY NOT DO
+
+Without written permission from the author, you may not use the Software for
+any commercial purpose. Commercial purposes include, but are not limited to:
+
+  a. selling the Software, or selling a product or service that includes it,
+     runs on it or is built from it;
+  b. offering the Software as a hosted service (SaaS) to customers or to the
+     public, whether paid, free with ads, or free as part of a business;
+  c. using the Software in the work of a company or other business, including
+     internal tools, client projects, consulting and freelance work;
+  d. using the Software in paid or monetised courses, bootcamps, training,
+     books, videos or other content where the Software is part of what is sold
+     or earns money;
+  e. presenting the Software as your own original work, or re-publishing it
+     under a different license; and
+  f. using the Software as training data for an AI model that is sold or used
+     commercially.
+
+If you are not sure whether your use is allowed, ask first:
+contact@codewithmuh.com.
+
+4. ATTRIBUTION
+
+Every copy and every modified version must keep this license file, and show
+this notice where the project is described (for example in its README):
+
+  Based on Heya by Muhammad Rashid (CodeWithMuh): https://github.com/codewithmuh/ai-virtual-staging-aws-eks
+
+5. THIRD-PARTY COMPONENTS
+
+Libraries, container images, AI models, AI services and datasets used by the
+Software are not covered by this license. They stay under their own licenses
+and terms, which you must also follow. Some of the models this project uses or
+suggests are themselves licensed for non-commercial use only.
+
+6. COMMERCIAL LICENSES
+
+To use the Software commercially, contact the author at
+contact@codewithmuh.com to ask for a commercial license. Commercial use is
+allowed only under a separate written agreement signed by the author.
+
+7. CONTRIBUTIONS
+
+Unless agreed otherwise in writing, anything you contribute to this repository
+(for example through a pull request) is provided under this license, and you
+also give the author the right to license your contribution to others under
+any terms, including commercial terms.
+
+8. ENDING YOUR PERMISSION
+
+If you break this license, your permission to use the Software ends
+automatically. If you stop the violation within 30 days of the author telling
+you about it, and it is the first time, your permission is restored.
+
+9. NO WARRANTY
+
+The Software is a teaching project. It is not certified for any regulated use,
+such as healthcare, security, surveillance or financial services, and must not
+be used with real personal, medical or other sensitive data.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
