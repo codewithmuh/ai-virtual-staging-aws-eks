@@ -1,0 +1,104 @@
+[
+  {
+    "id": "living-room",
+    "title": "Living room",
+    "style": "japandi",
+    "room": "generated",
+    "room_model": "Gemini",
+    "staged_by": "external",
+    "provider": "Gemini",
+    "model": null,
+    "seconds": null,
+    "structure": {
+      "score": 0.94,
+      "flagged": false
+    },
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "id": "bedroom",
+    "title": "Bedroom",
+    "style": "scandinavian",
+    "room": "generated",
+    "room_model": "Gemini",
+    "staged_by": "external",
+    "provider": "Gemini",
+    "model": null,
+    "seconds": null,
+    "structure": {
+      "score": 0.919,
+      "flagged": false
+    },
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "id": "home-office",
+    "title": "Home office",
+    "style": "modern",
+    "room": "generated",
+    "room_model": "Gemini",
+    "staged_by": "external",
+    "provider": "Gemini",
+    "model": null,
+    "seconds": null,
+    "structure": {
+      "score": 0.692,
+      "flagged": false
+    },
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "id": "workspace",
+    "title": "Open-plan workspace",
+    "style": "industrial",
+    "room": "generated",
+    "room_model": "Gemini",
+    "staged_by": "external",
+    "provider": "Gemini",
+    "model": null,
+    "seconds": null,
+    "structure": {
+      "score": 0.938,
+      "flagged": false
+    },
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "id": "dining-room",
+    "title": "Dining room",
+    "style": "scandinavian",
+    "room": "generated",
+    "room_model": "Gemini",
+    "staged_by": "external",
+    "provider": "Gemini",
+    "model": null,
+    "seconds": null,
+    "structure": {
+      "score": 0.867,
+      "flagged": false
+    },
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "id": "studio",
+    "title": "Studio apartment",
+    "style": "japandi",
+    "room": "generated",
+    "room_model": "Gemini",
+    "staged_by": "external",
+    "provider": "Gemini",
+    "model": null,
+    "seconds": null,
+    "structure": {
+      "score": 0.719,
+      "flagged": false
+    },
+    "width": 1200,
+    "height": 800
+  }
+]

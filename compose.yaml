@@ -1,5 +1,9 @@
-# Local run of every service with production-like hardening: `make up`, then `make down`.
+# Local run of every service with production-like hardening: `make up`, then open
+# http://localhost:3000. `make down` stops it.
 # Settings come from your shell or a `.env` file (see .env.example); defaults below.
+#
+# No AWS account needed: moto's server emulates S3 and DynamoDB on :4566, and the "fake"
+# AI providers need no keys. Set IMAGE_PROVIDER / WRITER_PROVIDER and the keys to use real ones.
 name: ai-virtual-staging-aws-eks
 
 x-hardening: &hardening
@@ -10,11 +14,57 @@ x-hardening: &hardening
   restart: unless-stopped
 
 services:
+  aws:
+    # S3 and DynamoDB in memory. Data is gone when the container stops; that is fine locally.
+    image: motoserver/moto:5.2.4
+    # Host port 4566, not 5000: macOS AirPlay Receiver already listens on 5000.
+    ports: ["127.0.0.1:4566:5000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/moto-api/')"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
   api:
     <<: *hardening
     build:
       context: ./services/api
       args: { APP_VERSION: local }
+    depends_on:
+      aws: { condition: service_healthy }
     environment:
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      S3_BUCKET: heya-photos
+      DYNAMODB_TABLE: heya
+      # The API reaches moto as "aws"; browsers reach it as localhost, so URLs are signed for that.
+      S3_ENDPOINT_URL: http://aws:5000
+      S3_PUBLIC_ENDPOINT_URL: http://localhost:4566
+      DYNAMODB_ENDPOINT_URL: http://aws:5000
+      AUTO_CREATE_RESOURCES: "true"
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      IMAGE_PROVIDER: ${IMAGE_PROVIDER:-fake}
+      WRITER_PROVIDER: ${WRITER_PROVIDER:-fake}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     ports: ["127.0.0.1:8000:8000"]
+
+  web:
+    <<: *hardening
+    build:
+      context: ./services/web
+      args: { APP_VERSION: local }
+    # Next.js may write its cache here; everything else stays read-only.
+    tmpfs: [/tmp, "/app/.next/cache:mode=1777"]
+    depends_on:
+      api: { condition: service_healthy }
+    environment:
+      # Browsers call the API on localhost:8000 (allowed by its CORS_ORIGINS). In AWS this is
+      # empty: one domain, and the load balancer sends /v1 to the API.
+      PUBLIC_API_URL: http://localhost:8000
+      # The share page reads stagings from the server side, over the compose network.
+      API_URL: http://api:8000
+    ports: ["127.0.0.1:3000:3000"]

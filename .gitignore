@@ -29,3 +29,6 @@ dist/
 .DS_Store
 .idea/
 *.swp
+
+# Images brought in by `make examples` (large originals; the processed copies are committed)
+/examples-src/

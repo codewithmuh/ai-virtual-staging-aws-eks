@@ -32,8 +32,8 @@ shape of an AI app (a web page, an API and a hosted model), which makes it the r
    area).
 6. **Share:** a page with the before/after slider and the "Virtually staged" label.
 
-**API (v1):** `POST /v1/uploads` (presigned URL), `POST /v1/stagings`, `GET /v1/stagings/{id}`,
-`POST /v1/listings`, `GET /v1/share/{id}`.
+**API (v1):** `GET /v1/styles`, `POST /v1/uploads` (presigned POST), `POST /v1/stagings`,
+`GET /v1/stagings/{id}` (also what the share page reads), `POST /v1/stagings/{id}/furniture`, `POST /v1/listings`.
 
 ## Rules
 

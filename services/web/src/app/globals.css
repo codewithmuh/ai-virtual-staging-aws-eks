@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* Warm paper, ink, and one vermilion accent (朱, the colour of a hanko seal). */
+@theme {
+  --color-paper: #f4f0e8;
+  --color-paper-2: #ebe5d9;
+  --color-paper-3: #ded6c6;
+  --color-ink: #1c1a17;
+  --color-ink-2: #4a453e;
+  --color-ink-3: #6b645a;
+  --color-ink-4: #9d9588;
+  --color-line: #d9d1c1;
+  --color-shu: #c8452d;
+  --color-moss: #44603c;
+  --color-amber: #8f540b;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  ::selection {
+    @apply bg-shu text-white;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-shu;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
+  }
+  .section-title {
+    @apply font-serif text-[2.25rem] leading-none text-ink;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-[4px] bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-black disabled:cursor-not-allowed disabled:bg-ink/25 disabled:text-paper/80;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 rounded-[4px] border border-ink px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-paper disabled:cursor-not-allowed disabled:border-ink/25 disabled:text-ink/40 disabled:hover:bg-transparent;
+  }
+  .btn-quiet {
+    @apply inline-flex items-center gap-3 rounded-[4px] py-2 pr-3 pl-2 text-sm text-ink transition-colors hover:bg-paper-3/70;
+  }
+  .link {
+    @apply cursor-pointer text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink;
+  }
+  .photo-tag {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-medium tracking-[0.06em] text-ink uppercase shadow-[0_1px_2px_rgba(0,0,0,0.12)] backdrop-blur-md;
+  }
+  .input {
+    @apply w-full rounded-[4px] border border-line bg-white/55 px-3 py-2 text-[15px] text-ink transition-colors placeholder:text-ink-4 hover:border-ink-4 focus:border-ink focus:bg-white focus:outline-none;
+  }
+  .select {
+    @apply appearance-none bg-[length:10px_6px] bg-[right_0.8rem_center] bg-no-repeat pr-8;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236b645a' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* Staging in progress: a soft band of light passing over the photo. */
+.sweep {
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.32), transparent);
+  animation: sweep 2.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+.pulse-dot {
+  @apply size-2 rounded-full bg-shu;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-paper-3),
+    var(--color-paper-2),
+    var(--color-paper-3)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep,
+  .pulse-dot,
+  .shimmer {
+    animation: none;
+  }
+}

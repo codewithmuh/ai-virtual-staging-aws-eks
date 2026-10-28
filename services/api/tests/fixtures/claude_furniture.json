@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "name": "low three-seat sofa",
+      "category": "seating",
+      "color": "oatmeal",
+      "material": "linen",
+      "search_query": "low japandi linen sofa oatmeal"
+    },
+    {
+      "name": "round coffee table",
+      "category": "table",
+      "color": "natural oak",
+      "material": "solid oak",
+      "search_query": "round oak coffee table low"
+    },
+    {
+      "name": "paper pendant lamp",
+      "category": "lighting",
+      "color": "white",
+      "material": "rice paper",
+      "search_query": "rice paper pendant lamp large"
+    }
+  ]
+}
