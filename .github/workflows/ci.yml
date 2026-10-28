@@ -65,16 +65,43 @@ jobs:
       - run: uv run mypy
       - run: uv run pytest # fails below 80% coverage (see pyproject.toml)
 
+  web:
+    name: Web (lint, types, tests, build)
+    runs-on: ubuntu-24.04 # pinned: upgrade deliberately, not when GitHub moves "latest"
+    defaults:
+      run:
+        working-directory: services/web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: services/web/.nvmrc
+          cache: npm
+          cache-dependency-path: services/web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run lint # ESLint and Prettier
+      - run: npm run typecheck
+      - run: npm test # fails below 80% coverage (see vitest.config.mts)
+      - run: npm run build
+
   images:
     name: Image ${{ matrix.service }} (build, scan, smoke test)
-    needs: [python]
+    needs: [python, web]
     runs-on: ubuntu-24.04 # pinned: upgrade deliberately, not when GitHub moves "latest"
     strategy:
       fail-fast: false
       matrix:
         include:
+          # No AWS and no AI keys in CI: the API defaults to the fake providers, and /v1/styles
+          # touches neither S3 nor DynamoDB. The web home page renders without calling the API.
           - service: api
             port: 8000
+            smoke: /v1/styles
+          - service: web
+            port: 3000
+            smoke: /
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -102,6 +129,7 @@ jobs:
         env:
           IMAGE: ${{ matrix.service }}:ci
           PORT: ${{ matrix.port }}
+          SMOKE: ${{ matrix.smoke }}
         run: |
           docker run --detach --name smoke --read-only --tmpfs /tmp --cap-drop ALL \
             --publish "127.0.0.1:9000:${PORT}" "$IMAGE"
@@ -110,6 +138,6 @@ jobs:
             sleep 1
           done
           curl --fail --silent --show-error http://127.0.0.1:9000/readyz
-          curl --fail --silent --show-error "http://127.0.0.1:9000/v1/hello?name=ci"
+          curl --fail --silent --show-error --output /dev/null "http://127.0.0.1:9000${SMOKE}"
           docker stop --time 20 smoke # graceful shutdown must finish in time
           docker logs smoke | tail -n 5

@@ -1,0 +1,17 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          { "text": "Here is the room staged in a Japandi style." },
+          { "inlineData": { "mimeType": "image/jpeg", "data": "{{IMAGE_B64}}" } }
+        ]
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "modelVersion": "gemini-3.1-flash-image",
+  "usageMetadata": { "promptTokenCount": 1310, "candidatesTokenCount": 1290, "totalTokenCount": 2600 }
+}

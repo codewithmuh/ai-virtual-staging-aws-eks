@@ -6,12 +6,13 @@ Thanks for helping! This guide gets you from clone to merged pull request.
 
 Option A — **Dev Container** (VS Code / Codespaces): open the repo and choose *Reopen in Container*. Everything is installed.
 
-Option B — local: install [uv](https://docs.astral.sh/uv/), [pre-commit](https://pre-commit.com/) and Docker, then:
+Option B — local: install [uv](https://docs.astral.sh/uv/), Node.js 22 or newer, [pre-commit](https://pre-commit.com/)
+and Docker, then:
 
 ```bash
 make setup   # dependencies + git hooks
-make check   # lint, type-check and test (what CI runs)
-make up      # run the API locally
+make check   # lint, type-check, test and build (what CI runs)
+make up      # run the app locally on http://localhost:3000
 ```
 
 ## Workflow

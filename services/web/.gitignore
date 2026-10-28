@@ -1,0 +1,8 @@
+# Dependencies, build and test output
+/node_modules
+/.next/
+/coverage
+*.tsbuildinfo
+
+# Written by next dev, next build and next typegen
+next-env.d.ts

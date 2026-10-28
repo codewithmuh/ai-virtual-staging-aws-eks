@@ -3,17 +3,21 @@
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
   "features": {
     "ghcr.io/devcontainers/features/python:1": { "version": "3.13" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "24" },
     "ghcr.io/devcontainers/features/terraform:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "postCreateCommand": "pipx install uv==0.13.0 && pipx install pre-commit && make setup",
-  "forwardPorts": [8000],
+  "forwardPorts": [3000, 8000],
   "customizations": {
     "vscode": {
       "extensions": [
         "charliermarsh.ruff",
         "ms-python.python",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
         "hashicorp.terraform",
         "ms-azuretools.vscode-docker",
         "github.vscode-github-actions",

@@ -12,8 +12,8 @@ and a listing description. It runs on Amazon EKS, set up the way a production te
 > to the original. Heya adds furniture and decor only; it never changes walls, windows, floors or views. Many
 > listing services require this; check the rules where you list.
 
-**Status: phase 0, building in public.** The repository, CI and the API's plumbing are done; the staging API is next.
-See the [roadmap](docs/roadmap.md).
+**Status: phase 0, building in public.** The web app and the staging API are done and run locally with no AWS
+account and no AI keys; comparing OpenAI and Gemini on real photos is next. See the [roadmap](docs/roadmap.md).
 
 ## Part 1 of AI on EKS
 
@@ -30,11 +30,15 @@ the parts before it.
 
 ## The demo
 
-1. Upload a photo of an empty room.
+Scroll the home page: a strip of empty rooms (living room, bedroom, home office, open-plan workspace, dining room,
+studio) slides past, and each one is furnished as it crosses the screen. Then try your own:
+
+1. Upload a photo of an empty room (or click "Try a sample room").
 2. Pick a style: Japandi, Scandinavian, Industrial or Modern.
-3. The furnished room appears in seconds, with a before/after slider and the "Virtually staged" label.
+3. The furnished room wipes in over the empty one, with a before/after slider and the "Virtually staged" label.
 4. "Shop this look" lists the main pieces in the photo.
 5. Claude writes the listing description from the photos and the facts you enter.
+6. "Copy share link" gives a page a buyer can open: the same slider, nothing to install.
 
 Then the platform demo: run a load test, kill pods and a node, and watch the autoscaler and the load balancer
 keep the app up.
@@ -69,40 +73,93 @@ The full design, rules and the numbers it will publish are in [docs/scope.md](do
 
 ## Quick start
 
-Requirements: [uv](https://docs.astral.sh/uv/), [pre-commit](https://pre-commit.com/) and Docker, or just open
-the **Dev Container**.
+Requirements: [uv](https://docs.astral.sh/uv/), Node.js 22 or newer, [pre-commit](https://pre-commit.com/) and
+Docker, or just open the **Dev Container**.
 
 ```bash
 make setup    # install dependencies and git hooks
-make check    # lint, type-check and test (same as CI)
-make up       # the API on :8000
+make check    # lint, type-check, test and build (same as CI)
+make up       # web on :3000, API on :8000, S3 and DynamoDB emulated by moto on :4566
 
-curl localhost:8000/healthz          # {"status":"ok"}
-curl localhost:8000/readyz           # {"status":"ready"}
+open http://localhost:3000                         # the app: click "Try a sample room"
+open http://localhost:8000/docs                    # every API endpoint, with a "Try it out" button
 
 make down
 ```
 
-Run `make` with no arguments to list every command.
+To work on the web app with hot reload, keep the API running and use `make dev` instead of the `web` container.
+
+### The examples on the home page
+
+They are real Heya results, made by `make examples` with the same pipeline as a staging: metadata removed,
+staged, structure checked, labelled. Set `IMAGE_PROVIDER` and its key in `.env` (`openai` with
+`OPENAI_API_KEY`, or `gemini` with `GEMINI_API_KEY`), then:
+
+```bash
+make examples                                   # six scenes; each empty room is generated, then staged
+make examples ARGS="--only workspace --force"   # stage one scene again
+```
+
+To bring your own images, put them in `examples-src/` at the repository root (git-ignored), named by scene:
+`living-room`, `bedroom`, `home-office`, `workspace`, `dining-room`, `studio` (`.png` or `.jpg`).
+
+```bash
+make examples                                          # real photos of empty rooms: Heya stages them
+make examples ARGS="--generated-by Gemini"             # empty rooms you made with AI: the page says so
+make examples ARGS="--generated-by Gemini --staged-by Gemini"   # also <scene>-staged.png, made outside Heya
+```
+
+With `--staged-by`, no API is called: Heya still checks each room's structure and adds the label, and the page
+credits the tool for the staging.
+
+Otherwise it's up to two image calls per scene (make the empty room, then stage it), billed by the provider.
+The results go to `services/web/public/examples/` and `services/web/src/content/examples.json`; commit both.
+Until there are examples, the strip doesn't show.
+
+`make up` uses the **fake** AI providers, so it costs nothing and needs no keys. To use real ones, copy
+`.env.example` to `.env` and set:
+
+| Variable | Values | Needs |
+|---|---|---|
+| `IMAGE_PROVIDER` | `openai`, `gemini`, `fake` | `OPENAI_API_KEY` or `GEMINI_API_KEY` |
+| `WRITER_PROVIDER` | `claude`, `fake` | `ANTHROPIC_API_KEY` |
+
+How a staging works, end to end:
+
+1. `POST /v1/uploads` returns a presigned POST; the browser sends the photo straight to S3.
+2. `POST /v1/stagings` with the `upload_id` and a style: the API strips the photo's metadata, stages it, checks
+   that the room didn't change, adds the "Virtually staged" label and returns both photos' URLs.
+3. `POST /v1/stagings/{id}/furniture` lists what's in the photo (cached after the first call).
+4. `POST /v1/listings` writes the listing from one to six stagings and the facts you send.
+
+Each browser (`X-Visitor-Id`), IP address and the whole site has a daily limit on AI calls; over it, the API
+answers `429` with `Retry-After`. Run `make` with no arguments to list every command.
 
 ## Repository layout
 
 ```
-services/api/      FastAPI service: src/api (config, logs, probes, metrics), tests/, Dockerfile. The
-                   staging endpoints go here as they are built.
+services/web/      Next.js web app, Dockerfile
+  src/app/         the studio (/), the share page (/s/[id]), probes
+  src/components/  studio, before/after slider, style picker, shop the look, listing writer
+  src/lib/         API client, photo checks, visitor id, styles
+services/api/      FastAPI service, Dockerfile, tests/ (with fixture responses in tests/fixtures/)
+  src/api/         main (routes, probes, metrics), service (the staging workflow), editors (OpenAI,
+                   Gemini, fake), writer (Claude, fake), images (clean, label), structure (rule R2),
+                   storage (S3), store (DynamoDB and the daily limits), schemas, config
 docs/              scope, roadmap, architecture, threat model, ADRs, runbooks
 compose.yaml       local run with production-like hardening
 Makefile           every command you need
 ```
 
-The web app, Terraform and Kubernetes manifests arrive with their phases in the [roadmap](docs/roadmap.md).
+The decisions behind it are in [docs/adr/](docs/adr/). Terraform and the Kubernetes manifests arrive with their
+phases in the [roadmap](docs/roadmap.md).
 
 ## How changes flow
 
 1. Open a pull request with a [Conventional Commit](https://www.conventionalcommits.org/) title.
-2. CI must pass: lint, types, tests, secret and vulnerability scans, image build and smoke test.
-3. release-please keeps a Release PR open. Merging it tags the version and publishes a signed image to GHCR with an
-   SBOM.
+2. CI must pass: lint, types, tests, secret and vulnerability scans, image builds and smoke tests.
+3. release-please keeps a Release PR open. Merging it tags the version and publishes signed images (web and api)
+   to GHCR with SBOMs.
 
 ## Production-grade checklist
 
